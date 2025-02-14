@@ -1,0 +1,17 @@
+name: RDP Access
+on: push
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Enable RDP
+        run: |
+          net user administrator /active:yes
+          net user administrator HIGHRYAN123
+          netsh advfirewall firewall add rule name="RDP" protocol=TCP dir=in localport=3389 action=allow
+          powershell Invoke-WebRequest -Uri "https://github.com/rdpwrapper/files/RDPWrap.zip" -OutFile "C:\RDPWrap.zip"
+          powershell Expand-Archive "C:\RDPWrap.zip" -DestinationPath "C:\RDPWrap"
+          cd C:\RDPWrap
+          .\install.bat
+          .\RDPConf.exe -silent
